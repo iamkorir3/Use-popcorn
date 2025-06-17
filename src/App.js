@@ -70,11 +70,10 @@ export default function App() {
 }
 
 function Navbar({ Children }) {
-  console.log(Children);
-
   return (
     <nav className="nav-bar">
       <Logo />
+      <Search />
       {Children}
     </nav>
   );
