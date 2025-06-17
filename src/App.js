@@ -55,12 +55,14 @@ export default function App() {
   return (
     <>
       <Navbar>
-        <Logo />
+        home
         <Search />
         <NumResults movies={movies} />
       </Navbar>
       <Main>
-        <ListBox movies={movies} />
+        <ListBox>
+          <MovieList movies={movies} />
+        </ListBox>
         <WatchedBox />
       </Main>
     </>
@@ -68,7 +70,14 @@ export default function App() {
 }
 
 function Navbar({ Children }) {
-  return <nav className="nav-bar">{Children}</nav>;
+  console.log(Children);
+
+  return (
+    <nav className="nav-bar">
+      <Logo />
+      {Children}
+    </nav>
+  );
 }
 
 function Search() {
@@ -101,15 +110,11 @@ function NumResults({ movies }) {
     </p>
   );
 }
-function Main({ Children, movies }) {
-  return (
-    <div className="main">
-      <ListBox movies={movies} />
-    </div>
-  );
+function Main({ Children }) {
+  return <div className="main">{Children}</div>;
 }
 
-function ListBox({ movies }) {
+function ListBox({ Children }) {
   const [isOpen1, setIsOpen1] = useState(true);
 
   return (
@@ -120,7 +125,7 @@ function ListBox({ movies }) {
       >
         {isOpen1 ? "–" : "+"}
       </button>
-      {isOpen1 && <MovieList movies={movies} />}
+      {isOpen1 && Children}
     </div>
   );
 }
