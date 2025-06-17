@@ -45,11 +45,11 @@ export default function StarRating({
           />
         ))}
       </div>
-      {/* <p style={texStyle}>
+      <p style={texStyle}>
         {messages.length === maxRating
           ? messages[temprating ? temprating - 1 : rating - 1]
           : temprating || rating || ""}
-      </p> */}
+      </p>
     </div>
   );
 }

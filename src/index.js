@@ -9,6 +9,7 @@ root.render(
   <React.StrictMode>
     <StarRating
       maxRating={5}
+      color="black"
       messages={["Terrible", "Bad", "Good", "Amazing"]}
     />
   </React.StrictMode>
