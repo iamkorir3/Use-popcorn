@@ -101,9 +101,12 @@ function NumResults({ movies }) {
     </p>
   );
 }
-function Main({ Children }) {
-  console.log(Children);
-  return <div className="main">{Children}</div>;
+function Main({ Children, movies }) {
+  return (
+    <div className="main">
+      <ListBox movies={movies} />
+    </div>
+  );
 }
 
 function ListBox({ movies }) {
