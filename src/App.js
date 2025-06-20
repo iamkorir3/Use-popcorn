@@ -1,5 +1,5 @@
 import { Children, useEffect, useState } from "react";
-
+import StarRating from "./StarRting";
 const tempMovieData = [
   {
     imdbID: "tt1375666",
@@ -308,7 +308,7 @@ function MovieDetails({ selectedId, onCloseMovie }) {
         `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
       );
       const data = await res.json();
-      console.log(data);
+      SetMovie(data);
     }
     getMovieDetails();
   }, []);
@@ -327,12 +327,17 @@ function MovieDetails({ selectedId, onCloseMovie }) {
           </p>
           <p>{genre}</p>
           <p>
-            <span>{imdbRating} IMDB Rating</span>
+            <span>⭐</span>
+            {imdbRating} IMDB Rating
           </p>
         </div>
       </header>
 
       <section>
+        <div className="rating">
+          <button>BB</button>
+          <StarRating maxRating={5} size={24} />
+        </div>
         <p>
           <em>{plot}</em>
         </p>
@@ -342,7 +347,7 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     </div>
   );
 }
-function WatchedMovie({ movie }) {
+export function WatchedMovie({ movie }) {
   return (
     <li>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
