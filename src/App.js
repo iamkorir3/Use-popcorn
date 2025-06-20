@@ -52,11 +52,13 @@ const average = (arr) =>
 const KEY = "e7003e";
 
 export default function App() {
+  const [query, setQuery] = useState("");
+
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const querry = "interstellar";
+  const tempQuery = "interstellar";
 
   useEffect(
     function () {
@@ -64,7 +66,7 @@ export default function App() {
         setIsLoading(true);
         try {
           const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${querry}`
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
           );
 
           if (!res.ok) throw new Error("something went wrong");
@@ -74,14 +76,15 @@ export default function App() {
 
           setMovies(data.Search || []);
           console.log(data.Search);
-          setIsLoading(false);
         } catch (err) {
           setError(err.message);
+        } finally {
+          setIsLoading(false);
         }
       }
       fetchMovies();
     },
-    [querry]
+    [query]
   );
 
   return (
@@ -90,7 +93,7 @@ export default function App() {
         Children={
           <>
             <Logo />
-            <Search />
+            <Search query={query} setQuery={setQuery} />
             <NumResults movies={movies} />
           </>
         }
@@ -99,19 +102,12 @@ export default function App() {
         <>
           <Box>
             {!isLoading && !error && <MovieList movies={movies} />}
-            {!isLoading && <Loader />}
-            {!isLoading && <Loader message={error} />}
-            {/* <MovieList movies={movies} />
-            {movies === undefined ? (
-              <ErrorMessage message={error} />
-            ) : (
-              <MovieList movies={movies} />
-            )} */}
+            {error && <ErrorMessage message={error} />}
+            {isLoading && <Loader />}
           </Box>
 
           <Box>
             <>
-              <ErrorMessage message={error} />
               <WatchedSummary watched={watched} />
 
               <WatchedMoviesList watched={watched} />
@@ -136,9 +132,7 @@ function Navbar({ Children }) {
   return <nav className="nav-bar">{Children}</nav>;
 }
 
-function Search() {
-  const [query, setQuery] = useState("");
-
+function Search({ query, setQuery }) {
   return (
     <input
       className="search"
