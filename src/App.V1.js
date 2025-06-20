@@ -1,4 +1,4 @@
-import { Children, useEffect, useState } from "react";
+import { Children, useState } from "react";
 
 const tempMovieData = [
   {
@@ -49,35 +49,9 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const KEY = "e7003e";
-
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(function () {
-    setIsLoading(true);
-    async function fetchMovies() {
-      try {
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`
-        );
-
-        if (!res.ok) throw new Error("something went wrong");
-
-        const data = await res.json();
-        setMovies(data.Search);
-        setIsLoading(false);
-      } catch (err) {
-        setError(err.message);
-        console.log(err.message);
-      }
-    }
-    fetchMovies();
-    console.log(movies);
-  }, []);
+  const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
 
   return (
     <>
@@ -94,11 +68,7 @@ export default function App() {
       <Main
         Children={
           <>
-            <Box>
-              {!isLoading && !error && <MovieList movies={movies} />}
-              {isLoading && <Loader />}
-              {error && <ErrorMessage message={error} />}
-            </Box>
+            <Box Children={<MovieList movies={movies} />} />
 
             <Box
               Children={
@@ -114,17 +84,7 @@ export default function App() {
     </>
   );
 }
-function ErrorMessage({ message }) {
-  console.log(message);
-  return (
-    <p className="error">
-      <span>{message}</span>
-    </p>
-  );
-}
-function Loader() {
-  return <p className="loader">Loading...</p>;
-}
+
 function Navbar({ Children }) {
   return <nav className="nav-bar">{Children}</nav>;
 }
