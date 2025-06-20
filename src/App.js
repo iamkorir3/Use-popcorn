@@ -58,13 +58,22 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const tempQuery = "interstellar";
+  const [selectedId, setSelectedId] = useState(null);
+
+  function handlesetSelectedId(id) {
+    setSelectedId((selectedId) => (id === selectedId ? null : id));
+  }
+
+  function handleClosemovie() {
+    setSelectedId(null);
+  }
 
   useEffect(
     function () {
       async function fetchMovies() {
-        setIsLoading(true);
         try {
+          setIsLoading(true);
+          setError("");
           const res = await fetch(
             `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
           );
@@ -75,12 +84,17 @@ export default function App() {
           if (data.Response === "False") throw new Error("Movie not found ");
 
           setMovies(data.Search || []);
-          console.log(data.Search);
         } catch (err) {
           setError(err.message);
         } finally {
           setIsLoading(false);
         }
+      }
+
+      if (query.length < 3) {
+        setError("");
+        setMovies([]);
+        return;
       }
       fetchMovies();
     },
@@ -101,17 +115,25 @@ export default function App() {
       <Main>
         <>
           <Box>
-            {!isLoading && !error && <MovieList movies={movies} />}
+            {!isLoading && !error && (
+              <MovieList movies={movies} onSetMovie={handlesetSelectedId} />
+            )}
             {error && <ErrorMessage message={error} />}
             {isLoading && <Loader />}
           </Box>
 
           <Box>
-            <>
-              <WatchedSummary watched={watched} />
-
-              <WatchedMoviesList watched={watched} />
-            </>
+            {selectedId ? (
+              <MovieDetails
+                selectedId={selectedId}
+                onCloseMovie={handleClosemovie}
+              />
+            ) : (
+              <>
+                <WatchedSummary watched={watched} />
+                <WatchedMoviesList watched={watched} />
+              </>
+            )}
           </Box>
         </>
       </Main>
@@ -182,19 +204,24 @@ function Box({ children }) {
   );
 }
 
-function MovieList({ movies }) {
+function MovieList({ movies, onSetMovie, onCloseMovie }) {
   return (
-    <ul className="list">
+    <ul className="list list-movies">
       {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} />
+        <Movie
+          movie={movie}
+          onSetMovie={onSetMovie}
+          onCloseMovie={onCloseMovie}
+          key={movie.imdbID}
+        />
       ))}
     </ul>
   );
 }
 
-function Movie({ movie }) {
+function Movie({ movie, onSetMovie }) {
   return (
-    <li key={movie.imdbID}>
+    <li key={movie.imdbID} onClick={() => onSetMovie(movie.imdbID)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
       <div>
@@ -261,6 +288,49 @@ function WatchedMoviesList({ watched }) {
   );
 }
 
+function MovieDetails({ selectedId, onCloseMovie }) {
+  const [movie, SetMovie] = useState({});
+  const {
+    Title: title,
+    Year: year,
+    Poster: poster,
+    Runtime: runtime,
+    imdbRating,
+    Plot: plot,
+    Released: released,
+    Actors: actors,
+    Director: director,
+    Genre: genre,
+  } = movie;
+  useEffect(function () {
+    async function getMovieDetails() {
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
+      );
+      const data = await res.json();
+      console.log(data);
+    }
+    getMovieDetails();
+  }, []);
+
+  return (
+    <div className="details">
+      <header>
+        <button className="btn-back" onClick={onCloseMovie}>
+          &larr;
+        </button>
+        <img src={poster} alt={`Poster of ${movie} movie`} />
+        <div className="details-overview">
+          <h2>{title}</h2>
+          <p>
+            {released} &bull; {runtime}
+          </p>
+        </div>
+        {selectedId}
+      </header>
+    </div>
+  );
+}
 function WatchedMovie({ movie }) {
   return (
     <li>
