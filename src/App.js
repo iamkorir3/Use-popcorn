@@ -56,28 +56,33 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const querry = "interstellar";
 
-  useEffect(function () {
-    setIsLoading(true);
-    async function fetchMovies() {
-      try {
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`
-        );
+  useEffect(
+    function () {
+      async function fetchMovies() {
+        setIsLoading(true);
+        try {
+          const res = await fetch(
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${querry}`
+          );
 
-        if (!res.ok) throw new Error("something went wrong");
+          if (!res.ok) throw new Error("something went wrong");
 
-        const data = await res.json();
-        setMovies(data.Search);
-        setIsLoading(false);
-      } catch (err) {
-        setError(err.message);
-        console.log(err.message);
+          const data = await res.json();
+          if (data.Response === "False") throw new Error("Movie not found ");
+
+          setMovies(data.Search || []);
+          console.log(data.Search);
+          setIsLoading(false);
+        } catch (err) {
+          setError(err.message);
+        }
       }
-    }
-    fetchMovies();
-    console.log(movies);
-  }, []);
+      fetchMovies();
+    },
+    [querry]
+  );
 
   return (
     <>
@@ -90,32 +95,34 @@ export default function App() {
           </>
         }
       />
+      <Main>
+        <>
+          <Box>
+            {!isLoading && !error && <MovieList movies={movies} />}
+            {!isLoading && <Loader />}
+            {!isLoading && <Loader message={error} />}
+            {/* <MovieList movies={movies} />
+            {movies === undefined ? (
+              <ErrorMessage message={error} />
+            ) : (
+              <MovieList movies={movies} />
+            )} */}
+          </Box>
 
-      <Main
-        Children={
-          <>
-            <Box>
-              {!isLoading && !error && <MovieList movies={movies} />}
-              {isLoading && <Loader />}
-              {error && <ErrorMessage message={error} />}
-            </Box>
+          <Box>
+            <>
+              <ErrorMessage message={error} />
+              <WatchedSummary watched={watched} />
 
-            <Box
-              Children={
-                <>
-                  <WatchedSummary watched={watched} />
-                  <WatchedMoviesList watched={watched} />
-                </>
-              }
-            />
-          </>
-        }
-      />
+              <WatchedMoviesList watched={watched} />
+            </>
+          </Box>
+        </>
+      </Main>
     </>
   );
 }
 function ErrorMessage({ message }) {
-  console.log(message);
   return (
     <p className="error">
       <span>{message}</span>
@@ -160,11 +167,11 @@ function NumResults({ movies }) {
   );
 }
 
-function Main({ Children }) {
-  return <div className="main">{Children}</div>;
+function Main({ children }) {
+  return <div className="main">{children}</div>;
 }
 
-function Box({ Children }) {
+function Box({ children }) {
   const [isOpen1, setIsOpen1] = useState(true);
 
   return (
@@ -175,7 +182,8 @@ function Box({ Children }) {
       >
         {isOpen1 ? "–" : "+"}
       </button>
-      {isOpen1 && Children}
+
+      {children}
     </div>
   );
 }
