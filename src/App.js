@@ -325,9 +325,20 @@ function MovieDetails({ selectedId, onCloseMovie }) {
           <p>
             {released} &bull; {runtime}
           </p>
+          <p>{genre}</p>
+          <p>
+            <span>{imdbRating} IMDB Rating</span>
+          </p>
         </div>
-        {selectedId}
       </header>
+
+      <section>
+        <p>
+          <em>{plot}</em>
+        </p>
+        <p>Starring {actors}</p>
+        <p>Directed By {director}</p>
+      </section>
     </div>
   );
 }
