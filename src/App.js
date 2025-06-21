@@ -69,7 +69,9 @@ export default function App() {
   }
 
   function handleWatchedMovie(movie) {
-    setWatched((movie) => [...watched, movie]);
+    console.log(movie);
+    setWatched((watched) => [...watched, movie]);
+    console.log(watched);
   }
 
   useEffect(
@@ -131,7 +133,7 @@ export default function App() {
               <MovieDetails
                 selectedId={selectedId}
                 onCloseMovie={handleClosemovie}
-                onWatched={handleWatchedMovie}
+                onAddWatched={handleWatchedMovie}
               />
             ) : (
               <>
@@ -285,6 +287,7 @@ function WatchedSummary({ watched }) {
 }
 
 function WatchedMoviesList({ watched }) {
+  console.log(watched);
   return (
     <ul className="list">
       {watched.map((movie) => (
@@ -294,7 +297,7 @@ function WatchedMoviesList({ watched }) {
   );
 }
 
-function MovieDetails({ selectedId, onCloseMovie, onWatched }) {
+function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
   const [movie, SetMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -312,7 +315,6 @@ function MovieDetails({ selectedId, onCloseMovie, onWatched }) {
   } = movie;
 
   function handleWatched() {
-    console.log("reach");
     const newWatchedMovie = {
       imdbID: selectedId,
       title,
@@ -322,7 +324,8 @@ function MovieDetails({ selectedId, onCloseMovie, onWatched }) {
       runtime: Number(runtime.split(" ").at(0)),
     };
 
-    onWatched(newWatchedMovie);
+    onAddWatched(newWatchedMovie);
+    onCloseMovie();
   }
 
   useEffect(
@@ -385,6 +388,7 @@ function MovieDetails({ selectedId, onCloseMovie, onWatched }) {
 }
 
 function WatchedMovie({ movie }) {
+  console.log(movie);
   return (
     <li>
       <img src={movie.poster} alt={`${movie.title} poster`} />
