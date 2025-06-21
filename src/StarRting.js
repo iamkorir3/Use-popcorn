@@ -61,7 +61,7 @@ function Star({ children }) {
     display: "block",
     cursor: "pointer",
   };
-  console.log(children);
+
   return (
     <span
       style={starStyle}
