@@ -256,16 +256,14 @@ function WatchedSummary({ watched }) {
   return (
     <div className="summary">
       <h2>Movies you watched</h2>
-      <div className="rating">
-        <StarRating maxRating={5} size={48} />
-      </div>
+
       <div>
         <p>
           <span>#️⃣</span>
           <span>{watched.length} movies</span>
         </p>
         <p>
-          <span>⭐️</span>
+          {/* <span>⭐️</span> */}
           <span>{avgImdbRating}</span>
         </p>
         <p>
@@ -330,6 +328,7 @@ function MovieDetails({ selectedId, onCloseMovie }) {
           </p>
           <p>{genre}</p>
           <p>
+            <div className="rating"></div>
             <span>⭐</span>
             {imdbRating} IMDB Rating
           </p>

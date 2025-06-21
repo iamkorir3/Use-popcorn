@@ -79,21 +79,21 @@ function Star({ children }) {
         >
           <path
             d="M12 2L14.5 8.5L21 9L16 13L18 20L12 16.5L6 20L8 13L3 9L9.5 8.5L12 2Z"
-            fill="none"
+            fill="#fcc419"
             stroke="currentColor"
           />
         </svg>
       ) : (
         <svg
-          width="48"
-          height="48"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
           fill="red"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="M12 2L14.5 8.5L21 9L16 13L18 20L12 16.5L6 20L8 13L3 9L9.5 8.5L12 2Z"
-            fill="red"
+            fill="none"
             stroke="currentColor"
           />
         </svg>
