@@ -93,7 +93,7 @@ function Star({ children }) {
         >
           <path
             d="M12 2L14.5 8.5L21 9L16 13L18 20L12 16.5L6 20L8 13L3 9L9.5 8.5L12 2Z"
-            fill="none"
+            // fill="#fcc419"
             stroke="currentColor"
           />
         </svg>

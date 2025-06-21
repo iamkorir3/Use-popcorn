@@ -291,6 +291,7 @@ function WatchedMoviesList({ watched }) {
 
 function MovieDetails({ selectedId, onCloseMovie }) {
   const [movie, SetMovie] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const {
     Title: title,
     Year: year,
@@ -303,59 +304,58 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     Director: director,
     Genre: genre,
   } = movie;
-  useEffect(function () {
-    async function getMovieDetails() {
-      const res = await fetch(
-        `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
-      );
-      const data = await res.json();
-      SetMovie(data);
-    }
-    getMovieDetails();
-  }, []);
+  useEffect(
+    function () {
+      async function getMovieDetails() {
+        setIsLoading(true);
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
+        );
+        const data = await res.json();
+        SetMovie(data);
+        setIsLoading(false);
+      }
+      getMovieDetails();
+    },
+    [selectedId]
+  );
 
   return (
     <div className="details">
-      <header>
-        <button className="btn-back" onClick={onCloseMovie}>
-          &larr;
-        </button>
-        <img src={poster} alt={`Poster of ${movie} movie`} />
-        <div className="details-overview">
-          <h2>{title}</h2>
-          <p>
-            {released} &bull; {runtime}
-          </p>
-          <p>{genre}</p>
-          <p>
-            <div className="rating"></div>
-            <span>⭐</span>
-            {imdbRating} IMDB Rating
-          </p>
-        </div>
-      </header>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <header>
+            <button className="btn-back" onClick={onCloseMovie}>
+              &larr;
+            </button>
+            <img src={poster} alt={`Poster of ${movie} movie`} />
+            <div className="details-overview">
+              <h2>{title}</h2>
+              <p>
+                {released} &bull; {runtime}
+              </p>
+              <p>{genre}</p>
+              <p>
+                <span>⭐</span>
+                {imdbRating} IMDB Rating
+              </p>
+            </div>
+          </header>
 
-      <section>
-        <div className="rating">
-          {/* <button>
-            {" "}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="red"
-              stroke="red"
-            >
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-          </button> */}
-          <StarRating maxRating={10} size={24} />
-        </div>
-        <p>
-          <em>{plot}</em>
-        </p>
-        <p>Starring {actors}</p>
-        <p>Directed By {director}</p>
-      </section>
+          <section>
+            <div className="rating">
+              <StarRating maxRating={10} size={24} />
+            </div>
+            <p>
+              <em>{plot}</em>
+            </p>
+            <p>Starring {actors}</p>
+            <p>Directed By {director}</p>
+          </section>
+        </>
+      )}
     </div>
   );
 }
